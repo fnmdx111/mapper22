@@ -1,5 +1,6 @@
 function mainloop(r)
     global tolerance;
+<<<<<<< HEAD
     global BOUNDARY
     global VISTED
     global START
@@ -9,6 +10,12 @@ function mainloop(r)
 
     global simulator
     simulator = 0;
+=======
+    tolerance = 0.25;
+
+    global simulator
+    simulator = 1;
+>>>>>>> 0ad96b27fa447db5645218368ebb1cffa812026a
 
     global circumnavigate_ok
 
@@ -18,10 +25,17 @@ function mainloop(r)
     global goal_coord
     goal_coord = pos_from_ht(endpose);
 
+<<<<<<< HEAD
     %trplot2(origin, 'color', 'g');
     %hold on
     %trplot2(endpose, 'color', 'r');
     %hold on
+=======
+    trplot2(origin, 'color', 'g');
+    hold on
+    trplot2(endpose, 'color', 'r');
+    hold on
+>>>>>>> 0ad96b27fa447db5645218368ebb1cffa812026a
    
 
     pose=se(DistanceSensorRoomba(r), 0, AngleSensorRoomba(r));
@@ -30,8 +44,13 @@ function mainloop(r)
         pose=turn_towards_dest(r,pose);
         display(pose)
 
+<<<<<<< HEAD
         CALIBRATE_COUNTER = 5;
         counter = 0;
+=======
+        CALIBRATE_COUNTER = 0;
+        counter = 2;
+>>>>>>> 0ad96b27fa447db5645218368ebb1cffa812026a
 
         %move forward until bump
         bump=bump_test(r);
@@ -43,7 +62,11 @@ function mainloop(r)
                 % orientation must be calibrated before it's too late.
                 % We calibrate our orientation every 2 steps.
                 display('calibrating-----------------------')
+<<<<<<< HEAD
                 pose = calibrate(r, pose);
+=======
+                pose = turn_towards_dest(r, pose);
+>>>>>>> 0ad96b27fa447db5645218368ebb1cffa812026a
                 counter = 0;
             end
             counter = counter + 1;
@@ -53,8 +76,13 @@ function mainloop(r)
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
 
+<<<<<<< HEAD
             %trplot2(pose);
             %hold on
+=======
+            trplot2(pose);
+            hold on
+>>>>>>> 0ad96b27fa447db5645218368ebb1cffa812026a
 
             if norm(pose(:, 3) - endpose(:,3)) < tolerance
                 display('SUCCEED')
@@ -64,7 +92,10 @@ function mainloop(r)
             bump = bump_test(r);
         end
 
+<<<<<<< HEAD
         
+=======
+>>>>>>> 0ad96b27fa447db5645218368ebb1cffa812026a
         %circumnavigate
         %if arrive end point--exit
         %if arrive last bump point--exit,failure

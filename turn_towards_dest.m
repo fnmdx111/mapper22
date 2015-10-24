@@ -35,9 +35,6 @@ display(dest_norm_vec)
 display('yiiiiiiipeeeeeeeee')
 display(dot(rob_vec, dest_vec))
 display(dot(dest_norm_vec, rob_vec));
-
-
-
 if dot(dest_norm_vec, rob_vec) < 0 % we need to make iCreate turn left
 
     angle_accum = AngleSensorRoomba(r);
@@ -50,9 +47,7 @@ if dot(dest_norm_vec, rob_vec) < 0 % we need to make iCreate turn left
         rob_vec = rot(rob_vec, angle);
         display(dot(rob_vec, dest_vec))
 
-        angle_accum = angle_accum + angle;        
-        %trplot2(old_pose * se(0, 0, angle_accum));
-        %hold on
+        angle_accum = angle_accum + angle;
     end
     SetFwdVelRadiusRoomba(r, 0, inf);
 
