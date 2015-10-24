@@ -1,4 +1,4 @@
-function arrange( )
+function arrange()
 %ARRANGE
 global BOUNDARY
 global DIAMETER
@@ -21,13 +21,15 @@ for i=1:count+1 % calculate points coordinates
         END(i,1)=START(i,1);
         END(i,2)=temp;
         START(i+1,1)=START(i,1)+DIAMETER;
-        temp=-9999;
-        for j=1:l
-            if SORT(j,1)==START(i+1,1) && SORT(j,2)>temp
-                temp=SORT(j,2);
+        if i<count+1
+            temp=-9999;
+            for j=1:l
+                if SORT(j,1)==START(i+1,1) && SORT(j,2)>temp
+                    temp=SORT(j,2);
+                end
             end
+            START(i+1,2)=temp
         end
-        START(i+1,2)=temp;
         flag=1;
     else
         temp=START(i,2);
@@ -39,13 +41,15 @@ for i=1:count+1 % calculate points coordinates
         END(i,1)=START(i,1);
         END(i,2)=temp;
         START(i+1,1)=START(i,1)+DIAMETER;
-        temp=9999;
-        for j=1:l
-            if SORT(j,1)==START(i+1,1) && SORT(j,2)<temp
-                temp=SORT(j,2);
+        if i<count+1
+            temp=9999;
+            for j=1:l
+                if SORT(j,1)==START(i+1,1) && SORT(j,2)<temp
+                    temp=SORT(j,2);
+                end
             end
+            START(i+1,2)=temp;
         end
-        START(i+1,2)=temp;     
         flag=0;
     end   
 end
