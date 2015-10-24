@@ -1,8 +1,10 @@
-function arrange( boundary,DIAMETER )
+function arrange( )
 %ARRANGE
+global BOUNDARY
+global DIAMETER
 global START
 global END
-SORT=sortrows(boundary); % sort boundary with x
+SORT=sortrows(BOUNDARY); % sort boundary with x
 START(1,1)=SORT(1,1);  % first point of START
 START(1,2)=SORT(1,1);
 l=length(SORT); % number of points
