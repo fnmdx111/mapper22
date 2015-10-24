@@ -1,9 +1,9 @@
-function env_plot(vst, diam)
-%  global VISITED
-% global DIAMETER
+function env_plot
+  global VISITED
+  global DIAMETER
 
-  %  diam = DIAMETER;
-  %  vst = VISITED;
+  diam = DIAMETER;
+  vst = VISITED;
 
   min_y = min(vst(:, 2));
   min_x = min(vst(:, 1));
