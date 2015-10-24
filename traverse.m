@@ -1,7 +1,7 @@
 function traverse(r)
 
 global is_traversing
-is_traversing = FALSE;
+is_traversing = false;
 global START
 global END
 global VISITED
@@ -10,18 +10,16 @@ global obstacle_hit_pos
 START_size = size(START);
 END_size = size(END);
 
-if START_SIZE ~= END_size
+if START_size ~= END_size
     display('Error. Size of START and END different.');
     return
 end
-if START_SIZE(2) ~= 2
+if START_size(2) ~= 2
     display('Error. Size of START and END is not n * 2');
 end
 
 VISITED = [];
 
-global simulator
-simulator = 0;
 
 global circumnavigate_ok
 
@@ -30,7 +28,7 @@ tolerance = 0.25;
 
 global goal_coord
 
-new_START = zeros(START_SIZE(1) * 2, 2);
+new_START = zeros(START_size(1) * 2, 2);
 new_END = new_START;
 
 new_START(1,:) = obstacle_hit_pos;
@@ -47,8 +45,8 @@ for i = 1 : START_size(1)-1
     new_END(temp,:) = START(i+1,:);
 end
 temp = temp + 1;
-new_START(temp,:) = START(START_size,:);
-new_END(temp,:) = END(START_size,:);
+new_START(temp,:) = START(START_size(1),:);
+new_END(temp,:) = END(START_size(1),:);
 
 
 for i = 1 : START_size(1) * 2
@@ -57,21 +55,16 @@ for i = 1 : START_size(1) * 2
     end
     
     if i > 1
-        is_traversing = TRUE;
+        is_traversing = false;
     end
     
     
     endpose = se(new_END(i, 1),new_END(i, 2),0);
     goal_coord = pos_from_ht(endpose);
     
-    %trplot2(origin, 'color', 'g');
-    %hold on
-    %trplot2(endpose, 'color', 'r');
-    %hold on
-    
     pose=se(DistanceSensorRoomba(r), 0, AngleSensorRoomba(r));
     
-    while true
+    while false
         pose=turn_towards_dest(r,pose);
         display(pose)
         
@@ -89,9 +82,9 @@ for i = 1 : START_size(1) * 2
                 % We calibrate our orientation every 2 steps.
                 display('calibrating-----------------------')
                 pose = calibrate(r, pose);
-                if is_traversing == TRUE
+                if is_traversing == false
                     visited_new_row = pos_from_ht(pose);
-                    VISTED = [VISTED; visited_new_row];
+                    VISTED(end+1,:) = visited_new_row;
                 end
                 counter = 0;
             end
@@ -101,9 +94,9 @@ for i = 1 : START_size(1) * 2
             
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
-            if is_traversing == TRUE
+            if is_traversing == false
                 visited_new_row = pos_from_ht(pose);
-                VISTED = [VISTED; visited_new_row];
+                VISTED(end+1,:) = visited_new_row;
             end
             
             %trplot2(pose);
@@ -139,6 +132,6 @@ for i = 1 : START_size(1) * 2
     
 end
 
-is_traversing = FALSE;
+is_traversing = false;
 
 end

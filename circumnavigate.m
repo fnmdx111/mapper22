@@ -4,9 +4,6 @@ function pose = circumnavigate(r, old_pose)
     global boundary_done
     global BOUNDARY
     
-    global is_traversing
-    global VISITED
-    
     circumnavigate_ok = 999;
 
     global tolerance
@@ -22,9 +19,9 @@ function pose = circumnavigate(r, old_pose)
     % robot is at the obstacle hit point again,
     % we also need the distance from obstacle to the goal, which
     % we only calculate once
-    if boundary_done == FALSE
+    if boundary_done == false
         boundary_new_row = obstacle_hit_pos;
-        BOUNDARY = [BOUNDARY; boundary_new_row];
+        BOUNDARY(end+1,:) = boundary_new_row;
     end
 
     global obstacle_to_goal_dist
@@ -92,6 +89,10 @@ function pose = next_move(r, old_pose)
     %     for a short distance,
     % * we turn right and move forward for a short distance if we can't
     %     find a wall.
+    global boundary_done
+    global BOUNDARY
+    global is_traversing
+    global VISITED
 
     wall = wall_test(r);
     bump = bump_test(r);
@@ -106,13 +107,13 @@ function pose = next_move(r, old_pose)
     else
         if wall == 1
             pose = old_pose * walk_straightly(r);
-            if boundary_done == FALSE
+            if boundary_done == false
                 boundary_new_row = pos_from_ht(pose);
                 BOUNDARY = [BOUNDARY; boundary_new_row];
             end
-            if is_traversing == TRUE
+            if is_traversing == true
                 visited_new_row = pos_from_ht(pose);
-                VISTED = [VISTED; visited_new_row];
+                VISITED(end+1,:) = visited_new_row;
             end
         else
             pose = old_pose * turn_right_until_a_wall(r, old_pose);
@@ -259,6 +260,8 @@ function new_pose = bypass(r, old_pose)
     global circumnavigate_ok
     global boundary_done
     global BOUNDARY
+    global is_traversing
+    global VISITED
 
     angle_accum = AngleSensorRoomba(r);
 
@@ -284,13 +287,15 @@ function new_pose = bypass(r, old_pose)
         dist_delta = move_forward(r, WALK_VEL, WALK_TIME);
         dist_accum = dist_accum + dist_delta;
         
-        if boundary_done == FALSE
+        if boundary_done == false
             boundary_new_row = old_pose * se(dist_accum, 0, angle_accum);
-            BOUNDARY = [BOUNDARY; boundary_new_row];
+            boundary_new_row = pos_from_ht(boundary_new_row);
+            BOUNDARY(end+1,:) = boundary_new_row;
         end  
-        if is_traversing == TRUE
+        if is_traversing == true
             visited_new_row = old_pose * se(dist_accum, 0, angle_accum);
-            VISTED = [VISTED; visited_new_row];
+            visited_new_row = pos_from_ht(visited_new_row);
+            VISITED(end+1,:) = visited_new_row;
         end
         
         circumnavigate_ok = am_i_done(...

@@ -2,31 +2,21 @@ function find_boundary(r)
     global boundary_done
     global BOUNDARY
     
-    boundary_done = FALSE;
+    boundary_done = false;
     BOUNDARY = [];
-    
-    tolerance = 0.25;
 
-    global simulator
-    simulator = 0;
 
     global circumnavigate_ok
 
     %origin = se(0,0,0);
-    endpose = se(INF,0,0);
+    endpose = se(2000000,0,0);
 
     global goal_coord
     goal_coord = pos_from_ht(endpose);
 
-    %trplot2(origin, 'color', 'g');
-    %hold on
-    %trplot2(endpose, 'color', 'r');
-    %hold on
-   
-
     pose=se(DistanceSensorRoomba(r), 0, AngleSensorRoomba(r));
 
-    while boundary_done == FALSE
+    while boundary_done == false
         pose=turn_towards_dest(r,pose);
         display(pose)
 
@@ -45,7 +35,7 @@ function find_boundary(r)
                 display('calibrating-----------------------')
                 pose = calibrate(r, pose);
                 boundary_new_row = pos_from_ht(pose);
-                BOUNDARY = [BOUNDARY; boundary_new_row];
+                BOUNDARY(end+1,:) = boundary_new_row;
                 counter = 0;
             end
             counter = counter + 1;
@@ -56,7 +46,7 @@ function find_boundary(r)
             pose = pose * se(dist, 0, 0);
             
             boundary_new_row = pos_from_ht(pose);
-            BOUNDARY = [BOUNDARY; boundary_new_row];
+            BOUNDARY(end+1,:) = boundary_new_row;
 
             %trplot2(pose);
             %hold on
@@ -82,7 +72,7 @@ function find_boundary(r)
         elseif circumnavigate_ok == -1
             display('Boundary founded')
             SetFwdVelRadiusRoomba(r, 0, inf); % stop iCreate
-            boundary_done = TRUE;
+            boundary_done = true;
         end
     end
 end
