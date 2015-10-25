@@ -14,7 +14,7 @@ for i=1:count+1 % calculate points coordinates
     if flag==0
         temp=START(i,2);
         for j=1:l
-            if SORT(j,1)==START(i,1) && SORT(j,2)>temp
+            if and(SORT(j,1)==START(i,1), SORT(j,2)>temp)
                 temp=SORT(j,2);
             end
         end
@@ -24,17 +24,18 @@ for i=1:count+1 % calculate points coordinates
             START(i+1,1)=START(i,1)+DIAMETER;
             temp=-9999;
             for j=1:l
-                if SORT(j,1)==START(i+1,1) && SORT(j,2)>temp
+                if and(SORT(j,1)==START(i+1,1), SORT(j,2)>temp)
                     temp=SORT(j,2);
                 end
             end
             START(i+1,2)=temp;
+            display('2222');
         end
         flag=1;
     else
         temp=START(i,2);
         for j=1:l
-            if SORT(j,1)==START(i,1) && SORT(j,2)<temp
+            if and(SORT(j,1)==START(i,1), SORT(j,2)<temp)
                 temp=SORT(j,2);
             end
         end
@@ -44,11 +45,12 @@ for i=1:count+1 % calculate points coordinates
             START(i+1,1)=START(i,1)+DIAMETER;
             temp=9999;
             for j=1:l
-                if SORT(j,1)==START(i+1,1) && SORT(j,2)<temp
+                if and(SORT(j,1)==START(i+1,1), SORT(j,2)<temp)
                     temp=SORT(j,2);
                 end
             end
             START(i+1,2)=temp;
+            display('1111');
         end
         flag=0;
     end   
