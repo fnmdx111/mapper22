@@ -45,8 +45,6 @@ function find_boundary(r)
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
             
-            boundary_new_row = pos_from_ht(pose);
-            BOUNDARY(end+1,:) = boundary_new_row;
 
             %trplot2(pose);
             %hold on
@@ -64,7 +62,7 @@ function find_boundary(r)
         %if arrive end point--exit
         %if arrive last bump point--exit,failure
         %if meet the intersected line, break and turn towards end point
-
+        BOUNDARY = [];
         pose = circumnavigate(r, pose);
         if circumnavigate_ok == 0 % We finished circumnavigation, and need to
                                   % go forward, so dicard previous BOUNDARY
