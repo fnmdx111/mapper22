@@ -1,5 +1,7 @@
 function traverse(r)
 
+display('traversing!!!');
+
 global is_traversing
 is_traversing = false;
 global START
@@ -10,10 +12,7 @@ global obstacle_hit_pos
 START_size = size(START);
 END_size = size(END);
 
-START
-END
-
-if (START_size(1) ~= END_size(1)) || (START_size(2) ~= END_size(2))
+if or(START_size(1) ~= END_size(1), START_size(2) ~= END_size(2))
     display('Error. Size of START and END different.');
     return
 end
@@ -53,9 +52,11 @@ new_END(temp,:) = END(START_size(1),:);
 
 
 for i = 1 : START_size(1) * 2
-    if (new_START(i, 1) == new_END(i, 1)) && (new_START(i, 2) == new_END(i, 2))
+    if and(new_START(i, 1) == new_END(i, 1),new_START(i, 2) == new_END(i, 2))
         continue;
     end
+    
+    i
     
     if i > 1
         is_traversing = false;

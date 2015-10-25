@@ -29,7 +29,6 @@ for i=1:count+1 % calculate points coordinates
                 end
             end
             START(i+1,2)=temp;
-            display('2222');
         end
         flag=1;
     else
@@ -50,7 +49,6 @@ for i=1:count+1 % calculate points coordinates
                 end
             end
             START(i+1,2)=temp;
-            display('1111');
         end
         flag=0;
     end   
