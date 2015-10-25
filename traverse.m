@@ -59,7 +59,7 @@ for i = 1 : START_size(1) * 2
     i
     
     if i > 1
-        is_traversing = false;
+        is_traversing = true;
     end
     
     
@@ -68,7 +68,7 @@ for i = 1 : START_size(1) * 2
     
     pose=se(DistanceSensorRoomba(r), 0, AngleSensorRoomba(r));
     
-    while false
+    while is_traversing == true
         pose=turn_towards_dest(r,pose);
         display(pose)
         
@@ -98,9 +98,9 @@ for i = 1 : START_size(1) * 2
             
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
-            if is_traversing == false
+            if is_traversing == true
                 visited_new_row = pos_from_ht(pose);
-                VISTED(end+1,:) = visited_new_row;
+                VISITED(end+1,:) = visited_new_row;
             end
             
             %trplot2(pose);
@@ -130,12 +130,12 @@ for i = 1 : START_size(1) * 2
         elseif circumnavigate_ok == 1
             % Remember to stop the robot
             SetFwdVelRadiusRoomba(r, 0, inf);
-            break;
+            is_traversing = false;
+            %break;
         end
     end
     
 end
 
-is_traversing = false;
 
 end
