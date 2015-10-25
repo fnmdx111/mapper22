@@ -4,14 +4,19 @@ global BOUNDARY
 global DIAMETER
 global START
 global END
-global SORT % todo: do not need to be global
+tolerence=0.04;
 SORT=sortrows(BOUNDARY,2); % sort boundary with x
-START(1,1)=SORT(1,1);  % first point of START
-START(1,2)=SORT(1,2);
+START(1,2)=SORT(1,2);  % first point of START
+for j=1:l
+    if abs(SORT(j,2)-START(i,2))<=tolerence %max
+        temp(end+1)=SORT(j,1);
+    end
+end
+START(1,1)=min(temp);
 l=length(SORT); % number of points
 count=floor((SORT(l,2)-SORT(1,2))/DIAMETER); %number of grids
 flag=0; % upper bound or lower bound
-tolerence=0.1;
+
 
 for i=1:count+1 % calculate points coordinates
     if flag==0
