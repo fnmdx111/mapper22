@@ -5,7 +5,7 @@ function h = TURN_VEL
     global simulator
 
     if simulator
-        h = 0.001; % if we set h = 0.1 on the simulator, it just blows up
+        h = 0.0005; % if we set h = 0.1 on the simulator, it just blows up
     else
         h = 0.05;
     end

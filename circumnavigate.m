@@ -27,6 +27,7 @@ function pose = circumnavigate(r, old_pose)
     global obstacle_to_goal_dist
     obstacle_to_goal_dist = norm(obstacle_hit_pos - goal_coord);
 
+    display(tolerance)
     % ensure Create will not stop at first few steps 
     while norm(pose(:, 3) - origin(:, 3)) <= tolerance
         pose = next_move(r, pose); % update position
@@ -37,6 +38,7 @@ function pose = circumnavigate(r, old_pose)
     % move before Create comes back to the point where it first
     % hit the wall
     f = am_i_done(r, pose);
+    display(f)
     while f == 999
         pose = next_move(r, pose); % update position
 

@@ -4,6 +4,7 @@ global BOUNDARY
 global DIAMETER
 global START
 global END
+global SORT % todo: do not need to be global
 SORT=sortrows(BOUNDARY,2); % sort boundary with x
 START(1,1)=SORT(1,1);  % first point of START
 START(1,2)=SORT(1,2);
