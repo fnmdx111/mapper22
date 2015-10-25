@@ -6,6 +6,9 @@ DIAMETER = 0.4;
 global simulator
 simulator = 1;
 
+global tolerance
+tolerance = 0.25;
+
 find_boundary(r);
 display('find boundary done..........')
 arrange();
