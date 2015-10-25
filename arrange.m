@@ -20,6 +20,8 @@ for i=1:count+1 % calculate points coordinates
                 temp(end+1)=SORT(j,2);
             end
         end
+        [max_value,max_position]=max(temp);
+        temp(max_position)=min(temp);
         END(i,1)=START(i,1);
         END(i,2)=max(temp);
         if i<count+1
@@ -30,6 +32,8 @@ for i=1:count+1 % calculate points coordinates
                     temp(end+1)=SORT(j,2);
                 end
             end
+            [max_value,max_position]=max(temp);
+            temp(max_position)=min(temp);
             START(i+1,2)=max(temp);
         end
         flag=1;
@@ -40,6 +44,8 @@ for i=1:count+1 % calculate points coordinates
                 temp(end+1)=SORT(j,2);
             end
         end
+        [min_value,min_position]=max(temp);
+        temp(min_position)=max(temp);
         END(i,1)=START(i,1);
         END(i,2)=min(temp);
         if i<count+1
@@ -50,6 +56,8 @@ for i=1:count+1 % calculate points coordinates
                     temp(end+1)=SORT(j,2);
                 end
             end
+            [min_value,min_position]=min(temp);
+            temp(min_position)=max(temp);
             START(i+1,2)=min(temp);
         end
         flag=0;
