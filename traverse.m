@@ -10,7 +10,10 @@ global obstacle_hit_pos
 START_size = size(START);
 END_size = size(END);
 
-if START_size ~= END_size
+START
+END
+
+if (START_size(1) ~= END_size(1)) || (START_size(2) ~= END_size(2))
     display('Error. Size of START and END different.');
     return
 end
@@ -68,27 +71,27 @@ for i = 1 : START_size(1) * 2
         pose=turn_towards_dest(r,pose);
         display(pose)
         
-        CALIBRATE_COUNTER = 5;
-        counter = 0;
+%         CALIBRATE_COUNTER = 5;
+%         counter = 0;
         
         %move forward until bump
         bump=bump_test(r);
         while bump==NO_BUMP
-            if counter > CALIBRATE_COUNTER
-                % Because it cannot be guaranteed that we exit circumnavigation
-                % mode with perfect orientation towards goal. And a small error
-                % in orientation most often turns out to be disastrous. So the
-                % orientation must be calibrated before it's too late.
-                % We calibrate our orientation every 2 steps.
-                display('calibrating-----------------------')
-                pose = calibrate(r, pose);
-                if is_traversing == false
-                    visited_new_row = pos_from_ht(pose);
-                    VISTED(end+1,:) = visited_new_row;
-                end
-                counter = 0;
-            end
-            counter = counter + 1;
+%             if counter > CALIBRATE_COUNTER
+%                 % Because it cannot be guaranteed that we exit circumnavigation
+%                 % mode with perfect orientation towards goal. And a small error
+%                 % in orientation most often turns out to be disastrous. So the
+%                 % orientation must be calibrated before it's too late.
+%                 % We calibrate our orientation every 2 steps.
+%                 display('calibrating-----------------------')
+%                 pose = calibrate(r, pose);
+%                 if is_traversing == false
+%                     visited_new_row = pos_from_ht(pose);
+%                     VISTED(end+1,:) = visited_new_row;
+%                 end
+%                 counter = 0;
+%             end
+%             counter = counter + 1;
             
             display(norm(pos_from_ht(pose) - goal_coord))
             
