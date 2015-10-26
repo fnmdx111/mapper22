@@ -31,6 +31,7 @@ function pose = circumnavigate(r, old_pose)
     % ensure Create will not stop at first few steps 
     while norm(pose(:, 3) - origin(:, 3)) <= tolerance
         pose = next_move(r, pose); % update position
+
         %
         %hold on
         
@@ -43,7 +44,6 @@ function pose = circumnavigate(r, old_pose)
     while f == 999
         pose = next_move(r, pose); % update position
 
-        %
         %hold on
         
         f = am_i_done(r, pose);
@@ -82,7 +82,6 @@ function finish = am_i_done(r, pose)
         end
     end
     finish = 999;
-    
     
 end
 

@@ -1,4 +1,5 @@
 function env_plot(color)
+
   global VISITED
   global DIAMETER
 

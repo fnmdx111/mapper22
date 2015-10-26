@@ -20,7 +20,9 @@ function pose = turn_towards_dest(r, old_pose)
 global goal_coord
 rob_vec = [old_pose(1, 1) old_pose(1, 2)];
 
+
 DOT_PROD_TOLERANCE = 0.002;
+
 FULL_ALIGN = 1;
 CALIBRATE_TOL = FULL_ALIGN - DOT_PROD_TOLERANCE;
 

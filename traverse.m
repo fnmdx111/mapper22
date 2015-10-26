@@ -51,12 +51,14 @@ for i = 1:size(new_END, 1)
             
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
-            
+
             if is_traversing_subpath == true
+
                 visited_new_row = pos_from_ht(pose);
                 VISITED(end+1,:) = visited_new_row;
             end
             
+
             if norm(pose(1:2, 3) - goal_coord) < tolerance
                 display('SUCCEED')
                 SetFwdVelRadiusRoomba(r, 0, inf);
@@ -82,6 +84,7 @@ for i = 1:size(new_END, 1)
             % Remember to stop the robot
             SetFwdVelRadiusRoomba(r, 0, inf);
             is_traversing_subpath = false;
+
             %break;
         end
     end

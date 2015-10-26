@@ -29,16 +29,7 @@ VISITED = END;
 env_plot('red');
 hold on
 
-
-% display('arrange done..........')
 traverse(r, p);
-% display('traverse done..........')
-% %VISITED = BOUNDARY;
-
-figure
-
-env_plot('blue');
-hold on
 
 display('plot done..........')
 
