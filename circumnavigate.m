@@ -1,5 +1,7 @@
 % `circumnavigate` will work even without wall sensor
 function pose = circumnavigate(r, old_pose)
+
+    trplot2(old_pose, 'color', 'red');
     global circumnavigate_ok
     global boundary_done
     global BOUNDARY
@@ -95,7 +97,7 @@ function pose = next_move(r, old_pose)
     %     find a wall.
     global boundary_done
     global BOUNDARY
-    global is_traversing
+    global is_traversing_subpath
     global VISITED
 
     wall = wall_test(r);
@@ -115,7 +117,7 @@ function pose = next_move(r, old_pose)
                 boundary_new_row = pos_from_ht(pose);
                 BOUNDARY = [BOUNDARY; boundary_new_row];
             end
-            if is_traversing == true
+            if is_traversing_subpath == true
                 visited_new_row = pos_from_ht(pose);
                 VISITED(end+1,:) = visited_new_row;
             end
@@ -264,7 +266,7 @@ function new_pose = bypass(r, old_pose)
     global circumnavigate_ok
     global boundary_done
     global BOUNDARY
-    global is_traversing
+    global is_traversing_subpath
     global VISITED
 
     angle_accum = AngleSensorRoomba(r);
@@ -296,7 +298,7 @@ function new_pose = bypass(r, old_pose)
             boundary_new_row = pos_from_ht(boundary_new_row);
             BOUNDARY(end+1,:) = boundary_new_row;
         end  
-        if is_traversing == true
+        if is_traversing_subpath == true
             visited_new_row = old_pose * se(dist_accum, 0, angle_accum);
             visited_new_row = pos_from_ht(visited_new_row);
             VISITED(end+1,:) = visited_new_row;
