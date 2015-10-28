@@ -17,16 +17,17 @@ function pose = turn_towards_dest(r, old_pose)
 % The trick here is to test out the corresponding normal vector and
 % the orientation we turn to.
 
+global current_start
 global goal_coord
 rob_vec = [old_pose(1, 1) old_pose(1, 2)];
 
 
-DOT_PROD_TOLERANCE = 0.002;
+DOT_PROD_TOLERANCE = 0.0005;
 
 FULL_ALIGN = 1;
 CALIBRATE_TOL = FULL_ALIGN - DOT_PROD_TOLERANCE;
 
-dest_vec = goal_coord - [0 0];
+dest_vec = goal_coord - pos_from_ht(current_start);
 dest_vec = dest_vec / norm(dest_vec);
 
 display(rob_vec)
