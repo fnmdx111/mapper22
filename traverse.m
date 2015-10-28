@@ -25,7 +25,6 @@ VISITED = [];
 global circumnavigate_ok
 
 global tolerance;
-tolerance = 0.25;
 
 global goal_coord
 
@@ -35,10 +34,21 @@ for i = 1:size(START, 1)
     new_END(end+1, :) = END(i, :);
 end
 
+trplot2(se(new_END(1,1), new_END(1,2),0), 'color', 'blue');
+trplot2(se(new_END(2,1), new_END(2,2), 0), 'color', 'yellow');
+
+global current_start
+current_start = pose;
+
 for i = 1:size(new_END, 1)
+    i
+    trplot2(se(new_END(i,1), new_END(i,2),0), 'color', 'blue');
+    
     is_traversing_subpath = true;
 
     goal_coord = new_END(i);
+    
+    trplot2(current_start, 'color', 'black');
 
     while is_traversing_subpath == true
         pose=turn_towards_dest(r,pose);
@@ -63,12 +73,15 @@ for i = 1:size(new_END, 1)
                 display('SUCCEED')
                 SetFwdVelRadiusRoomba(r, 0, inf);
                 circumnavigate_ok = 1;
+                is_traversing_subpath = false;
                 break;
             end
             bump = bump_test(r);
         end
         
         if circumnavigate_ok == 1
+            is_traversing_subpath = false;
+            display('SUCCEED2');
             break;
         end
         
@@ -82,8 +95,10 @@ for i = 1:size(new_END, 1)
             % go forward, so do nothing here
         elseif circumnavigate_ok == 1
             % Remember to stop the robot
+            display('SUCCEED3');
             SetFwdVelRadiusRoomba(r, 0, inf);
             is_traversing_subpath = false;
+            current_start = pose;
 
             %break;
         end
