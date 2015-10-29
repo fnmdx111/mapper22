@@ -5,7 +5,7 @@ global DIAMETER
 global START
 global END
 tolerence=0.06;
-lb=length(BOUNDARY)
+lb=length(BOUNDARY);
 for li=1:lb
    BOUNDARY(li,1) = BOUNDARY(li,1)*0.9;
    BOUNDARY(li,2) = BOUNDARY(li,2)*0.9;
