@@ -1,53 +1,45 @@
 % `circumnavigate` will work even without wall sensor
-function pose = circumnavigate(r, old_pose)
-
+function pose = circumnavigate(r, goal, old_pose)
     trplot2(old_pose, 'color', 'red');
     global circumnavigate_ok
+
     global boundary_done
     global BOUNDARY
-    
-    circumnavigate_ok = 999;
 
-    global tolerance
+    % mw_g stands for module-wise global variable
+    global mw_g_circumnavigate_goal_coord
+    mw_g_circumnavigate_goal_coord = goal;
 
-    global goal_coord
+    global mw_g_circumnavigate_tolerance
+    mw_g_circumnavigate_tolerance = 0.19;
 
     origin = old_pose;
     pose = origin;
 
-    global obstacle_hit_pos
-    obstacle_hit_pos = pos_from_ht(pose);
+    global mw_g_circumnavigate_obstacle_hit_pos
+    mw_g_circumnavigate_obstacle_hit_pos = pos_from_ht(pose);
     % we need this position every time we want to tell if the
     % robot is at the obstacle hit point again,
     % we also need the distance from obstacle to the goal, which
     % we only calculate once
     if boundary_done == false
-        boundary_new_row = obstacle_hit_pos;
-        BOUNDARY(end+1,:) = boundary_new_row;
+        BOUNDARY(end+1, :) = mw_g_circumnavigate_obstacle_hit_pos;
     end
 
-    global obstacle_to_goal_dist
-    obstacle_to_goal_dist = norm(obstacle_hit_pos - goal_coord);
+    global mw_g_circumnavigate_obstacle_to_goal_dist
+    mw_g_circumnavigate_obstacle_to_goal_dist = norm(mw_g_circumnavigate_obstacle_hit_pos - goal);
 
-    display(tolerance)
     % ensure Create will not stop at first few steps 
-    while norm(pose(:, 3) - origin(:, 3)) <= tolerance
+    while norm(pose(:, 3) - origin(:, 3)) <= mw_g_circumnavigate_tolerance
         pose = next_move(r, pose); % update position
-
-        %
-        %hold on
-        
     end
 
     % move before Create comes back to the point where it first
     % hit the wall
     f = am_i_done(r, pose);
-    display(f)
     while f == 999
         pose = next_move(r, pose); % update position
 
-        %hold on
-        
         f = am_i_done(r, pose);
         if f ~= 999
             break
@@ -63,28 +55,27 @@ end
 
 function finish = am_i_done(r, pose)
     trap_tolerance = 0.15;
-    global tolerance
-    global goal_coord
-    global obstacle_hit_pos
-    global obstacle_to_goal_dist
+    global mw_g_circumnavigate_tolerance
+    global mw_g_circumnavigate_goal_coord
+    global mw_g_circumnavigate_obstacle_hit_pos
+    global mw_g_circumnavigate_obstacle_to_goal_dist
 
     current_pos = pos_from_ht(pose);
-    dist = norm(goal_coord - current_pos);
+    dist = norm(mw_g_circumnavigate_goal_coord - current_pos);
 
-    if dist < tolerance
+    if dist < mw_g_circumnavigate_tolerance
         finish = 1;
         return
-    elseif norm(obstacle_hit_pos - current_pos) < trap_tolerance
+    elseif norm(mw_g_circumnavigate_obstacle_hit_pos - current_pos) < trap_tolerance
         finish = -1; % we are back at where we start circumnavigating
         return       % we are most certainly trapped
     elseif is_intersected(pose) == 1
-        if dist < obstacle_to_goal_dist
+        if dist < mw_g_circumnavigate_obstacle_to_goal_dist
             finish = 0;
             return;
         end
     end
     finish = 999;
-    
 end
 
 % move, and update the position of Create
@@ -102,8 +93,7 @@ function pose = next_move(r, old_pose)
 
     wall = wall_test(r);
     bump = bump_test(r);
-    display(wall)
-    display(bump)
+
     if bump ~= NO_BUMP   % if Create bumps into a something, it must stop
         if bump == FRONT
             pose = old_pose * turn_left_till_bump_gone(r);
@@ -113,13 +103,13 @@ function pose = next_move(r, old_pose)
     else
         if wall == 1
             pose = old_pose * walk_straightly(r);
+
             if boundary_done == false
-                boundary_new_row = pos_from_ht(pose);
-                BOUNDARY = [BOUNDARY; boundary_new_row];
+                BOUNDARY(end + 1, :) = pos_from_ht(pose);
             end
+
             if is_traversing_subpath == true
-                visited_new_row = pos_from_ht(pose);
-                VISITED(end+1,:) = visited_new_row;
+                VISITED(end+1, :) = pos_from_ht(pose);
             end
         else
             pose = old_pose * turn_right_until_a_wall(r, old_pose);
@@ -158,7 +148,10 @@ end
 
 function pose = turn_right_until_a_wall(r, old_pose)
     global simulator
-    global circumnavigate_ok
+    global boundary_done
+    global BOUNDARY
+    global is_traversing_subpath
+    global VISITED
 
     angle_accum = AngleSensorRoomba(r);
 
@@ -201,7 +194,7 @@ function pose = turn_right_until_a_wall(r, old_pose)
             % so we instead walk ahead a few steps,
             % and then start turning again.
             dist_accum = DistanceSensorRoomba(r);
-            dist_accum = DistanceSensorRoomba(r); % TODO!!!
+            % dist_accum = DistanceSensorRoomba(r); % TODO!!!
    
             while dist_accum < BYPASS_DIST % walk ahead
                 % TODO: Maybe there will be a case that we stop here?
@@ -211,11 +204,22 @@ function pose = turn_right_until_a_wall(r, old_pose)
                 dist_delta = move_forward(r, WALK_VEL, WALK_TIME);
                 dist_accum = dist_accum + dist_delta;
 
-                circumnavigate_ok = am_i_done(...
+                if boundary_done == false
+                    boundary_new_row = old_pose * se(dist_accum, 0, angle_accum);
+                    boundary_new_row = pos_from_ht(boundary_new_row);
+                    BOUNDARY(end+1, :) = boundary_new_row;
+                end  
+                if is_traversing_subpath == true
+                    visited_new_row = old_pose * se(dist_accum, 0, angle_accum);
+                    visited_new_row = pos_from_ht(visited_new_row);
+                    VISITED(end+1, :) = visited_new_row;
+                end
+
+                ok = am_i_done(...
                     r,...
                     old_pose * se(dist_accum, 0, angle_accum));
 
-                if circumnavigate_ok ~= 999
+                if ok ~= 999
                     pose = se(dist_accum, 0, angle_accum + AngleSensorRoomba(r));
                     return
                 end
@@ -225,17 +229,16 @@ function pose = turn_right_until_a_wall(r, old_pose)
                     break;
                 end
             end
-            
-            circumnavigate_ok = am_i_done(...
+
+            ok = am_i_done(...
                 r,...
                 old_pose * se(dist_accum, 0, angle_accum));
             
-            if circumnavigate_ok ~= 999
+            if ok ~= 999
                 pose = se(dist_accum, 0, angle_accum + AngleSensorRoomba(r));
                 return
             end
-                
-                
+
             delta_pose = delta_pose *...
                          se(dist_accum, 0.,...
                             angle_accum + AngleSensorRoomba(r));
@@ -249,7 +252,6 @@ function pose = turn_right_until_a_wall(r, old_pose)
     end
     SetFwdVelRadiusRoomba(r, 0, inf);
     %display('velocity be 0!!!!!!');
-    
 
     if max_angle_reached == 1
         angle_accum = 0.;
@@ -263,7 +265,6 @@ function pose = turn_right_until_a_wall(r, old_pose)
 end
 
 function new_pose = bypass(r, old_pose)
-    global circumnavigate_ok
     global boundary_done
     global BOUNDARY
     global is_traversing_subpath
@@ -287,27 +288,25 @@ function new_pose = bypass(r, old_pose)
     new_pose = se(0., 0., angle_accum);
 
     dist_accum = 0.;
-           
-                
     while dist_accum < BYPASS_DIST % walk ahead
         dist_delta = move_forward(r, WALK_VEL, WALK_TIME);
         dist_accum = dist_accum + dist_delta;
-        
+
         if boundary_done == false
             boundary_new_row = old_pose * se(dist_accum, 0, angle_accum);
             boundary_new_row = pos_from_ht(boundary_new_row);
-            BOUNDARY(end+1,:) = boundary_new_row;
+            BOUNDARY(end+1, :) = boundary_new_row;
         end  
         if is_traversing_subpath == true
             visited_new_row = old_pose * se(dist_accum, 0, angle_accum);
             visited_new_row = pos_from_ht(visited_new_row);
-            VISITED(end+1,:) = visited_new_row;
+            VISITED(end+1, :) = visited_new_row;
         end
-        
-        circumnavigate_ok = am_i_done(...
+
+        ok = am_i_done(...
             r,...
             old_pose * se(dist_accum, 0, angle_accum));
-        if circumnavigate_ok ~= 999
+        if ok ~= 999
             new_pose = new_pose * se(dist_accum, 0., AngleSensorRoomba(r));
             return
         end
@@ -317,18 +316,7 @@ function new_pose = bypass(r, old_pose)
             break;
         end
     end
-    
-    
-    circumnavigate_ok = am_i_done(...
-        r,...
-        old_pose * se(dist_accum, 0, angle_accum));
-    
-    if circumnavigate_ok ~= 999
-        pose = se(dist_accum, 0, angle_accum + AngleSensorRoomba(r));
-        return
-    end
-                
-                
+
     new_pose = new_pose * se(dist_accum, 0., AngleSensorRoomba(r));
                                              % Accumulate the angle
                                              % every time!

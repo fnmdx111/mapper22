@@ -1,40 +1,32 @@
 function main(r)
 
-global DIAMETER
-DIAMETER = 0.4;
+    global DIAMETER
+    DIAMETER = 0.4;
 
-global simulator
-simulator = 1;
+    global simulator
+    simulator = 1;
 
-global tolerance
-tolerance = 0.25;
+    global tolerance
+    tolerance = 0.25;
 
-global BOUNDARY
-global SORT
-global START
-global END
-global VISITED
+    global BOUNDARY
+    global START
+    global END
+    global VISITED
 
-p = find_boundary(r);
-display('find boundary done..........')
-arrange();
+    p = find_boundary(r);
+    display('find boundary done..........')
 
+    arrange();
 
-% figure
-% 
-VISITED = START;
-env_plot('blue');
-hold on
-VISITED = END;
-env_plot('red');
-hold on
+    VISITED = START;
+    env_plot('blue');
+    hold on
+    VISITED = END;
+    env_plot('red');
+    hold on
 
-traverse(r, p);
+    traverse(r, p);
 
-display('plot done..........')
-
+    env_plot('green');
 end
-
-
-
-

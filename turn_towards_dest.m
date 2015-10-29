@@ -1,4 +1,4 @@
-function pose = turn_towards_dest(r, old_pose)
+function pose = turn_towards_dest(r, goal_coord, old_pose)
 % turn the iCreate to make it head towards destination
 
 % The basic idea here is that we calculate the dot product between
@@ -17,8 +17,6 @@ function pose = turn_towards_dest(r, old_pose)
 % The trick here is to test out the corresponding normal vector and
 % the orientation we turn to.
 
-global current_start
-global goal_coord
 rob_vec = [old_pose(1, 1) old_pose(1, 2)];
 
 
@@ -27,17 +25,16 @@ DOT_PROD_TOLERANCE = 0.0005;
 FULL_ALIGN = 1;
 CALIBRATE_TOL = FULL_ALIGN - DOT_PROD_TOLERANCE;
 
-dest_vec = goal_coord - pos_from_ht(current_start);
+dest_vec = goal_coord - pos_from_ht(old_pose);
 dest_vec = dest_vec / norm(dest_vec);
 
-display(rob_vec)
-display(dest_vec)
 
 dest_norm_vec = norm_vec(dest_vec);
-display(dest_norm_vec)
+
 display('yiiiiiiipeeeeeeeee')
 display(dot(rob_vec, dest_vec))
 display(dot(dest_norm_vec, rob_vec));
+
 if dot(dest_norm_vec, rob_vec) < 0 % we need to make iCreate turn left
 
     angle_accum = AngleSensorRoomba(r);
