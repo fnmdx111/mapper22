@@ -4,7 +4,12 @@ global BOUNDARY
 global DIAMETER
 global START
 global END
-tolerence=0.07;
+tolerence=0.06;
+lb=length(BOUNDARY)
+for li=1:lb
+   BOUNDARY(li,1) = BOUNDARY(li,1)*0.9;
+   BOUNDARY(li,2) = BOUNDARY(li,2)*0.9;
+end
 SORT=sortrows(BOUNDARY,2); % sort boundary with x
 l=length(SORT); % number of points
 count=floor((SORT(l,2)-SORT(1,2))/DIAMETER); %number of grids
