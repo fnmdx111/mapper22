@@ -17,17 +17,15 @@ function pose = turn_towards_dest(r, goal_coord, old_pose)
 % The trick here is to test out the corresponding normal vector and
 % the orientation we turn to.
 
-rob_vec = [old_pose(1, 1) old_pose(1, 2)];
-
+rob_vec = [old_pose(1, 1) old_pose(2, 1)]';
 
 DOT_PROD_TOLERANCE = 0.0005;
 
 FULL_ALIGN = 1;
 CALIBRATE_TOL = FULL_ALIGN - DOT_PROD_TOLERANCE;
 
-dest_vec = goal_coord - pos_from_ht(old_pose);
+dest_vec = goal_coord' - pos_from_ht(old_pose)';
 dest_vec = dest_vec / norm(dest_vec);
-
 
 dest_norm_vec = norm_vec(dest_vec);
 
@@ -35,7 +33,7 @@ display('yiiiiiiipeeeeeeeee')
 display(dot(rob_vec, dest_vec))
 display(dot(dest_norm_vec, rob_vec));
 
-if dot(dest_norm_vec, rob_vec) < 0 % we need to make iCreate turn left
+if dot(dest_norm_vec, rob_vec) > 0 % we need to make iCreate turn left
 
     angle_accum = AngleSensorRoomba(r);
 
@@ -78,9 +76,9 @@ end
 end
 
 function new_v = rot(v, rad)
-    new_v = v * [cos(rad) -sin(rad); sin(rad) cos(rad)];
+    new_v = [cos(rad) -sin(rad); sin(rad) cos(rad)] * v;
 end
 
 function v = norm_vec(dv)
-    v = [dv(2), -dv(1)];
+    v = [dv(2), -dv(1)]';
 end

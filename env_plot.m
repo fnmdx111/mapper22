@@ -1,10 +1,8 @@
-function env_plot(color)
-
-  global VISITED
+function env_plot(points, fig, color)
   global DIAMETER
-
   diam = DIAMETER;
-  vst = VISITED;
+
+  vst = points;
 
   min_y = min(vst(:, 2));
   min_x = min(vst(:, 1));
@@ -26,7 +24,16 @@ function env_plot(color)
     x = floor(i(1) / diam);
     y = floor(i(2) / diam);
 
-    rectangle('Position', [x*diam y*diam diam diam], 'FaceColor', color);
+%    set(0, 'CurrentFigure', fig);
+    rectangle('Position', [x*diam y*diam diam diam],...
+              'FaceColor', color);
     hold on
   end
+end
+
+function my_rect(l, b, w, h, color, fig)
+    plot([l, l, l + w, l + w, l],...
+         [b, b + h, b + h, b, b], color,...
+         'LineWidth', 2,...
+         'CurrentFigure', fig);
 end

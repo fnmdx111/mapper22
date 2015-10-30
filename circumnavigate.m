@@ -11,7 +11,7 @@ function pose = circumnavigate(r, goal, old_pose)
     mw_g_circumnavigate_goal_coord = goal;
 
     global mw_g_circumnavigate_tolerance
-    mw_g_circumnavigate_tolerance = 0.19;
+    mw_g_circumnavigate_tolerance = 0.12;
 
     origin = old_pose;
     pose = origin;
@@ -54,7 +54,7 @@ function pose = circumnavigate(r, goal, old_pose)
 end
 
 function finish = am_i_done(r, pose)
-    trap_tolerance = 0.15;
+    trap_tolerance = 0.10;
     global mw_g_circumnavigate_tolerance
     global mw_g_circumnavigate_goal_coord
     global mw_g_circumnavigate_obstacle_hit_pos

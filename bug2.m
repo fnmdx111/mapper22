@@ -19,22 +19,59 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
 
     global VISITED
 
+    CALIBRATE_TOLERANCE = 0.1;
+
     while true
         pose = turn_towards_dest(r, goal, pose);
 
-        %move forward until bump
+        OS = pos_from_ht(pose);
+        SP = (goal - OS)';
+        orientation = [pose(1, 1) pose(2, 1)]';
+        sin_theta = sqrt(1 - dot(orientation, SP / norm(SP)) ^ 2);
+
+        % We do this every 3 steps:
+        %
+        %              * (R_x, R_y)
+        %             /|---
+        %            / | ^
+        %           /  | |
+        %          /   | y?
+        %   rv -> ^    | |
+        %        /)?   | v
+        %       *------+---------* (P_x, P_y)
+        %       (S_x, S_y)
+        %
+        %  rv = [pose(1, 1) pose(2, 1)]'
+        %  sin? = sqrt(1 - (rv . (SP / ||SP||))^2)
+        %  y? = ||RS||sin?
+        %  If y? > epsilon, calibrate the orientation!
+
+        step_count = 0;
+
         bump = bump_test(r);
         while bump == NO_BUMP
             %display(norm(pos_from_ht(pose) - goal_coord))
 
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
+            display(norm(pose(1:2, 3) - goal'))
+
+            if step_count > 2
+                RS_length = norm(OS - pos_from_ht(pose));
+                y = RS_length * sin_theta;
+
+                if y > CALIBRATE_TOLERANCE
+                    pose = turn_towards_dest(r, goal, pose);
+                end
+
+                step_count = 0;
+            end
+            step_count = step_count + 1;
 
             if work_mode == 1
                 VISITED(end+1, :) = pos_from_ht(pose);
             end
 
-            SetFwdVelRadiusRoomba(r, 0, inf); % for debug only
             if norm(pose(1:2, 3) - goal') < tolerance
                 display('SUCCEED')
                 SetFwdVelRadiusRoomba(r, 0, inf);

@@ -15,6 +15,9 @@ function plan
     maxy = max(BOUNDARY(:, 2));
     miny = min(BOUNDARY(:, 2));
 
+    x_diff = 0.10;
+    y_diff = 0.10;
+
     endpoints = [];
 
     % plan from Y+ to Y-
@@ -79,24 +82,38 @@ function plan
     while true
         if i <= endpoint_count
             ENDPOINTS(i, :) = endpoints(i, :);
+            ENDPOINTS(i, 1) = ENDPOINTS(i, 1) + x_diff;
         end
 
         if i + 1 <= endpoint_count
             ENDPOINTS(i + 1, :) = endpoints(i + 1, :);
+            ENDPOINTS(i + 1, 1) = ENDPOINTS(i + 1, 1) - x_diff;
         end
 
         if i + 3 <= endpoint_count
-            ENDPOINTS(i + 3, :) = endpoints(i + 3, :);
+            ENDPOINTS(i + 2, :) = endpoints(i + 3, :);
+            ENDPOINTS(i + 2, 1) = ENDPOINTS(i + 2, 1) - x_diff;
         end
 
         if i + 2 <= endpoint_count
-            ENDPOINTS(i + 2, :) = endpoints(i + 2, :);
+            ENDPOINTS(i + 3, :) = endpoints(i + 2, :);
+            ENDPOINTS(i + 3, 1) = ENDPOINTS(i + 3, 1) + x_diff;
         end
 
         i = i + 4;
         if i > endpoint_count;
             break;
         end
+    end
+    ENDPOINTS(1, 2) = ENDPOINTS(1, 2) - y_diff;
+    if size(ENDPOINTS, 1) > 1
+        ENDPOINTS(2, 2) = ENDPOINTS(2, 2) - y_diff;
+    end
+    if size(ENDPOINTS, 1) == 3
+        ENDPOINTS(end, 2) = ENDPOINTS(2, 2) + y_diff;
+    elseif size(ENDPOINTS, 1) > 3
+        ENDPOINTS(end - 1, 2) = ENDPOINTS(end - 1, 2) + y_diff;
+        ENDPOINTS(end, 2) = ENDPOINTS(end, 2) + y_diff;
     end
 end
 
