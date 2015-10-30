@@ -12,7 +12,7 @@ function pose = circumnavigate(r, goal, old_pose)
 
     global gw_g_bug2_tolerance
     global mw_g_circumnavigate_tolerance
-    mw_g_circumnavigate_tolerance = gw_g_bug2_tolerance;
+    mw_g_circumnavigate_tolerance = gw_g_bug2_tolerance + 0.05;
 
     origin = old_pose;
     pose = origin;
