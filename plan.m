@@ -15,8 +15,8 @@ function plan
     maxy = max(BOUNDARY(:, 2));
     miny = min(BOUNDARY(:, 2));
 
-    x_diff = 0.05;
-    y_diff = 0.05;
+    x_diff = 0.1;
+    y_diff = 0.1;
 
     endpoints = [];
 
