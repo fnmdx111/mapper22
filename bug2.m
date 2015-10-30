@@ -21,7 +21,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
 
     global VISITED
 
-    CALIBRATE_TOLERANCE = 0.15;
+    CALIBRATE_TOLERANCE = 0.07;
 
     while true
         pose = turn_towards_dest(r, goal, pose);
