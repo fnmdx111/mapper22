@@ -9,7 +9,6 @@ function main(r)
     global tolerance
     tolerance = 0.25;
 
-    global BOUNDARY
     global START
     global END
     global VISITED

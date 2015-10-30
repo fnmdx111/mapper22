@@ -34,6 +34,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
                 VISITED(end+1, :) = pos_from_ht(pose);
             end
 
+            SetFwdVelRadiusRoomba(r, 0, inf); % for debug only
             if norm(pose(1:2, 3) - goal') < tolerance
                 display('SUCCEED')
                 SetFwdVelRadiusRoomba(r, 0, inf);

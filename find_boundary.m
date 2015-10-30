@@ -1,10 +1,6 @@
 function pose = find_boundary(r)
     global boundary_done
-    global BOUNDARY
-    
     boundary_done = false;
-
-    global circumnavigate_ok
 
     %origin = se(0,0,0);
     end_ = [2000000.0, 0.];

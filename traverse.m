@@ -21,24 +21,22 @@ function traverse(r, old_pose)
 
     VISITED = [];
 
-    new_END = [];
+    targets = [];
     for i = 1:size(START, 1)
-        new_END(end+1, :) = START(i, :);
-        new_END(end+1, :) = END(i, :);
+        targets(end+1, :) = [START(i, 2) START(i, 1)];
+        targets(end+1, :) = [END(i, 2) END(i, 1)];
     end
 
-    trplot2(se(new_END(1,1), new_END(1,2),0), 'color', 'blue');
-    trplot2(se(new_END(2,1), new_END(2,2), 0), 'color', 'yellow');
-
-    current_start = pos_from_ht(old_pose);
+    trplot2(se(targets(1,1), targets(1,2),0), 'color', 'blue');
+    trplot2(se(targets(2,1), targets(2,2), 0), 'color', 'yellow');
 
     pose = old_pose;
-    for i = 1:size(new_END, 1)
-        trplot2(se(new_END(i,1), new_END(i,2), 0), 'color', 'blue');
+    for i = 1:size(targets, 1)
+        trplot2(se(targets(i,1), targets(i,2), 0), 'color', 'blue');
         trplot2(pose, 'color', 'black');
 
         is_traversing_subpath = true;
 
-        pose = bug2(r, pose, new_END(i, 1), new_END(i, 2), 1);
+        pose = bug2(r, pose, targets(i, 1), targets(i, 2), 1);
     end
 end
