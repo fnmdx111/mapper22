@@ -7,6 +7,8 @@ function traverse(r, old_pose)
     global START
     global END
     global VISITED
+    global USE_PLAN
+    global ENDPOINTS
 
     START_size = size(START);
     END_size = size(END);
@@ -21,10 +23,14 @@ function traverse(r, old_pose)
 
     VISITED = [];
 
-    targets = [];
-    for i = 1:size(START, 1)
-        targets(end+1, :) = [START(i, 2) START(i, 1)];
-        targets(end+1, :) = [END(i, 2) END(i, 1)];
+    if USE_PLAN == 1
+        targets = ENDPOINTS;
+    else
+        targets = [];
+        for i = 1:size(START, 1)
+            targets(end+1, :) = [START(i, 2) START(i, 1)];
+            targets(end+1, :) = [END(i, 2) END(i, 1)];
+        end
     end
 
     trplot2(se(targets(1,1), targets(1,2),0), 'color', 'blue');
@@ -34,6 +40,8 @@ function traverse(r, old_pose)
     for i = 1:size(targets, 1)
         trplot2(se(targets(i,1), targets(i,2), 0), 'color', 'blue');
         trplot2(pose, 'color', 'black');
+        display(pos_from_ht(pose));
+        display(targets(i));
 
         is_traversing_subpath = true;
 

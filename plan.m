@@ -9,9 +9,11 @@ function plan
     global mw_g_plan_diam
     mw_g_plan_diam = DIAMETER;
 
+    diam = mw_g_plan_diam;
+
     % plan trajectory about axis Y
-    [maxy] = max(BOUNDARY(:, 2));
-    [miny] = min(BOUNDARY(:, 2));
+    maxy = max(BOUNDARY(:, 2));
+    miny = min(BOUNDARY(:, 2));
 
     endpoints = [];
 
@@ -75,25 +77,33 @@ function plan
     i = 1;
     ENDPOINTS = zeros(endpoint_count, 2);
     while true
-        ENDPOINTS(i, :) = endpoints(i, :);
+        if i <= endpoint_count
+            ENDPOINTS(i, :) = endpoints(i, :);
+        end
 
         if i + 1 <= endpoint_count
             ENDPOINTS(i + 1, :) = endpoints(i + 1, :);
         end
+
         if i + 3 <= endpoint_count
             ENDPOINTS(i + 3, :) = endpoints(i + 3, :);
         end
+
         if i + 2 <= endpoint_count
             ENDPOINTS(i + 2, :) = endpoints(i + 2, :);
         end
 
         i = i + 4;
+        if i > endpoint_count;
+            break;
+        end
     end
 end
 
 function [minp, maxp] = find_about_axis_x(coord_y)
     global BOUNDARY
     global mw_g_plan_grid_cell_tol
+    global mw_g_plan_diameter
 
     minx = 9999999.;
     minp = [0 0];
@@ -101,7 +111,8 @@ function [minp, maxp] = find_about_axis_x(coord_y)
     maxp = [0 0];
     for b = BOUNDARY'
         x = b(1); y = b(2);
-        if y >= coord_y - mw_g_plan_grid_cell_tol
+        if and(y >= coord_y - mw_g_plan_grid_cell_tol,...
+               y < coord_y)
             if minx > x
                 minx = x;
                 % For the x coord, we are fixed with minx and maxx,

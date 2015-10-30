@@ -12,18 +12,29 @@ function main(r)
     global START
     global END
     global VISITED
+    global ENDPOINTS
+
+    global USE_PLAN
+    USE_PLAN = 1;
 
     p = find_boundary(r);
     display('find boundary done..........')
 
-    arrange();
+    if USE_PLAN == 1
+        plan();
 
-    VISITED = START;
-    env_plot('blue');
-    hold on
-    VISITED = END;
-    env_plot('red');
-    hold on
+        VISITED = ENDPOINTS;
+        env_plot('blue');
+    else
+        arrange();
+
+        VISITED = START;
+        env_plot('blue');
+        hold on
+        VISITED = END;
+        env_plot('red');
+        hold on
+    end
 
     traverse(r, p);
 
