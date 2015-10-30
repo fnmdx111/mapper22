@@ -9,14 +9,12 @@ function b = is_intersected(parameters, old_pose)
     % coordinate is y (of course you don't do `equal float`),
     % we are on m-line.
 
-    global mw_g_circumnavigate_tolerance
-
     mk = parameters(1);
     mb = parameters(2);
 
     current_pos = pos_from_ht(old_pose);
 
-    tolerance = mw_g_circumnavigate_tolerance;
+    tolerance = 0.07;
 
     if abs(current_pos(2) - mk * current_pos(1) - mb) <= tolerance
         b = 1;
