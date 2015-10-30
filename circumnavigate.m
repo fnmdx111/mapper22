@@ -10,14 +10,27 @@ function pose = circumnavigate(r, goal, old_pose)
     global mw_g_circumnavigate_goal_coord
     mw_g_circumnavigate_goal_coord = goal;
 
+    global gw_g_bug2_tolerance
     global mw_g_circumnavigate_tolerance
-    mw_g_circumnavigate_tolerance = 0.12;
+    mw_g_circumnavigate_tolerance = gw_g_bug2_tolerance;
 
     origin = old_pose;
     pose = origin;
 
     global mw_g_circumnavigate_obstacle_hit_pos
     mw_g_circumnavigate_obstacle_hit_pos = pos_from_ht(pose);
+
+    x1 = mw_g_circumnavigate_obstacle_hit_pos(1);
+    y1 = mw_g_circumnavigate_obstacle_hit_pos(2);
+    x2 = mw_g_circumnavigate_goal_coord(1);
+    y2 = mw_g_circumnavigate_goal_coord(2);
+
+    mk = (y1 - y2) / (x1 - x2);
+    mb = (x1 * y2 - x2 * y1) / (x1 - x2);
+
+    global mw_g_circumnavigate_mline_parameters
+    mw_g_circumnavigate_mline_parameters = [mk, mb];
+
     % we need this position every time we want to tell if the
     % robot is at the obstacle hit point again,
     % we also need the distance from obstacle to the goal, which
@@ -59,6 +72,7 @@ function finish = am_i_done(r, pose)
     global mw_g_circumnavigate_goal_coord
     global mw_g_circumnavigate_obstacle_hit_pos
     global mw_g_circumnavigate_obstacle_to_goal_dist
+    global mw_g_circumnavigate_mline_parameters
 
     current_pos = pos_from_ht(pose);
     dist = norm(mw_g_circumnavigate_goal_coord - current_pos);
@@ -69,7 +83,7 @@ function finish = am_i_done(r, pose)
     elseif norm(mw_g_circumnavigate_obstacle_hit_pos - current_pos) < trap_tolerance
         finish = -1; % we are back at where we start circumnavigating
         return       % we are most certainly trapped
-    elseif is_intersected(pose) == 1
+    elseif is_intersected(mw_g_circumnavigate_mline_parameters, pose) == 1
         if dist < mw_g_circumnavigate_obstacle_to_goal_dist
             finish = 0;
             return;

@@ -4,7 +4,9 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
     %            1 - traverse
 
     global circumnavigate_ok
-    global tolerance
+
+    global gw_g_bug2_tolerance
+    gw_g_bug2_tolerance = 0.13;
 
     goal = [goalx goaly];
 
@@ -72,7 +74,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
                 VISITED(end+1, :) = pos_from_ht(pose);
             end
 
-            if norm(pose(1:2, 3) - goal') < tolerance
+            if norm(pose(1:2, 3) - goal') < gw_g_bug2_tolerance
                 display('SUCCEED')
                 SetFwdVelRadiusRoomba(r, 0, inf);
 
