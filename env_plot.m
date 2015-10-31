@@ -13,8 +13,6 @@ function env_plot(points, fig, color)
     display(nv(end, :))
   end % translate all the points in vst to the first quadrant
 
-  nv = sortrows(nv, [1, 2]);
-
 %   figure
 %   set(gca, 'xtick', [0:diam:(max(nv(:, 1)) + diam)]);
 %   set(gca, 'ytick', [0:diam:(max(nv(:, 2)) + diam)]);
@@ -24,16 +22,22 @@ function env_plot(points, fig, color)
     x = floor(i(1) / diam);
     y = floor(i(2) / diam);
 
+%     if abs(i(1) - x * diam) < 0.1
+%         rectangle('Position', [(x - 1)*diam y*diam diam diam],...
+%                   'FaceColor', color);
+%     end
+    if abs(i(2) - y * diam) < 0.1
+        rectangle('Position', [x*diam (y - 1)*diam diam diam],...
+                  'FaceColor', color);
+    end
+    if abs(i(2) - (y + 1) * diam) < 0.1
+        rectangle('Position', [x*diam (y + 1)*diam diam diam],...
+                  'FaceColor', color);
+    end
+
 %    set(0, 'CurrentFigure', fig);
     rectangle('Position', [x*diam y*diam diam diam],...
               'FaceColor', color);
     hold on
   end
-end
-
-function my_rect(l, b, w, h, color, fig)
-    plot([l, l, l + w, l + w, l],...
-         [b, b + h, b + h, b, b], color,...
-         'LineWidth', 2,...
-         'CurrentFigure', fig);
 end

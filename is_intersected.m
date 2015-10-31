@@ -7,7 +7,7 @@ function b = is_intersected(parameters, old_pose)
 
     current_pos = pos_from_ht(old_pose);
 
-    tolerance = 0.07;
+    tolerance = 0.1;
 
     % I.e. whenever we P_y == kP_x + b, we are on m-line.
     if abs(current_pos(2) - mk * current_pos(1) - mb) <= tolerance

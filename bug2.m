@@ -12,7 +12,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
     global circumnavigate_ok
 
     global gw_g_bug2_tolerance
-    gw_g_bug2_tolerance = 0.15;
+    gw_g_bug2_tolerance = 0.19;
 
     goal = [goalx goaly];
     % We have a BUG here, if we use a 2D vector as one of the
@@ -73,7 +73,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
                 y = RS_length * sin_theta;
                 display(y)
 
-                if y > CALIBRATE_TOLERANCE
+                if abs(y) > CALIBRATE_TOLERANCE
                     pose = turn_towards_dest(r, goal, pose);
                 end
 

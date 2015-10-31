@@ -37,14 +37,17 @@ function main(r)
     p = find_boundary(r);
 
     plan();
+    global ENDPOINTS
+    env_plot(ENDPOINTS, 0, 'blue');
 
     traverse(r, p);
+    display('Traverse done, plotting, please wait...')
 
     global BOUNDARY
     figure
     env_plot(BOUNDARY, 0, 'green');
     env_plot(VISITED, 0, 'green');
-    env_plot(OBS_BOUNDARY, 0, 'green');
+    % env_plot(OBS_BOUNDARY, 0, 'green');
 end
 
 % <concat.py>: concatenating bug2.m ------->
@@ -62,7 +65,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
     global circumnavigate_ok
 
     global gw_g_bug2_tolerance
-    gw_g_bug2_tolerance = 0.15;
+    gw_g_bug2_tolerance = 0.19;
 
     goal = [goalx goaly];
     % We have a BUG here, if we use a 2D vector as one of the
@@ -123,7 +126,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
                 y = RS_length * sin_theta;
                 display(y)
 
-                if y > CALIBRATE_TOLERANCE
+                if abs(y) > CALIBRATE_TOLERANCE
                     pose = turn_towards_dest(r, goal, pose);
                 end
 
@@ -280,7 +283,7 @@ function pose = circumnavigate(r, goal, old_pose)
 end
 
 function finish = am_i_done(r, pose)
-    trap_tolerance = 0.10;
+    trap_tolerance = 0.19;
     global mw_g_circumnavigate_tolerance
     global mw_g_circumnavigate_goal_coord
     global mw_g_circumnavigate_obstacle_hit_pos
@@ -575,8 +578,6 @@ function env_plot(points, fig, color)
     display(nv(end, :))
   end % translate all the points in vst to the first quadrant
 
-  nv = sortrows(nv, [1, 2]);
-
 %   figure
 %   set(gca, 'xtick', [0:diam:(max(nv(:, 1)) + diam)]);
 %   set(gca, 'ytick', [0:diam:(max(nv(:, 2)) + diam)]);
@@ -586,17 +587,23 @@ function env_plot(points, fig, color)
     x = floor(i(1) / diam);
     y = floor(i(2) / diam);
 
+%     if abs(i(1) - x * diam) < 0.1
+%         rectangle('Position', [(x - 1)*diam y*diam diam diam],...
+%                   'FaceColor', color);
+%     end
+    if abs(i(2) - y * diam) < 0.1
+        rectangle('Position', [x*diam (y - 1)*diam diam diam],...
+                  'FaceColor', color);
+    end
+    if abs(i(2) - (y + 1) * diam) < 0.1
+        rectangle('Position', [x*diam (y + 1)*diam diam diam],...
+                  'FaceColor', color);
+    end
+
 %    set(0, 'CurrentFigure', fig);
     rectangle('Position', [x*diam y*diam diam diam],...
               'FaceColor', color);
   end
-end
-
-function my_rect(l, b, w, h, color, fig)
-    plot([l, l, l + w, l + w, l],...
-         [b, b + h, b + h, b, b], color,...
-         'LineWidth', 2,...
-         'CurrentFigure', fig);
 end
 
 % <concat.py>: concatenating find_boundary.m ------->
@@ -628,7 +635,7 @@ function b = is_intersected(parameters, old_pose)
 
     current_pos = pos_from_ht(old_pose);
 
-    tolerance = 0.07;
+    tolerance = 0.1;
 
     % I.e. whenever we P_y == kP_x + b, we are on m-line.
     if abs(current_pos(2) - mk * current_pos(1) - mb) <= tolerance
@@ -684,9 +691,9 @@ function plan
     endpoints = [];
 
     % plan from Y+ to Y-
-    next_grid_coord_y = maxy;
+    next_grid_coord_y = maxy - diam * 0.4;
     endpoint_count = 0;
-    while next_grid_coord_y >= miny
+    while next_grid_coord_y > miny
         % find the maximum x and minimum x on the grid lines defined by
         % y = next_grid_coord_y, i.e.
         %
@@ -737,7 +744,7 @@ function plan
             endpoint_count = endpoint_count + 1;
         end
 
-        next_grid_coord_y = next_grid_coord_y - diam;
+        next_grid_coord_y = next_grid_coord_y - diam * 0.8;
     end
 
     i = 1;
@@ -800,15 +807,15 @@ function [minp, maxp] = find_about_axis_x(coord_y)
                 %   1. the middle y (this point may not be in the BOUNDARY
                 %      point set) of the grid
                 %   2. the rightmost y of the grid, i.e. coord_y
-                %   3. the y of the minx coord, i.e. current method
+                %   3. the y of the minx coord
                 %   4. the average y of all the ys (of the points)
                 %      in the grid
                 %   5. ...
-                minp = b;
+                minp = [minx, y];
             end
             if maxx < x
                 maxx = x;
-                maxp = b;
+                maxp = [maxx, y];
             end
         end
     end
@@ -969,7 +976,7 @@ function h = TURN_VEL
     global simulator
 
     if simulator
-        h = 0.002; % if we set h = 0.1 on the simulator, it just blows up
+        h = 0.001; % if we set h = 0.1 on the simulator, it just blows up
     else
         h = 0.05;
     end

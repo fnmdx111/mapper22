@@ -21,9 +21,9 @@ function plan
     endpoints = [];
 
     % plan from Y+ to Y-
-    next_grid_coord_y = maxy;
+    next_grid_coord_y = maxy - diam * 0.4;
     endpoint_count = 0;
-    while next_grid_coord_y >= miny
+    while next_grid_coord_y > miny
         % find the maximum x and minimum x on the grid lines defined by
         % y = next_grid_coord_y, i.e.
         %
@@ -74,7 +74,7 @@ function plan
             endpoint_count = endpoint_count + 1;
         end
 
-        next_grid_coord_y = next_grid_coord_y - diam;
+        next_grid_coord_y = next_grid_coord_y - diam * 0.8;
     end
 
     i = 1;
@@ -137,15 +137,15 @@ function [minp, maxp] = find_about_axis_x(coord_y)
                 %   1. the middle y (this point may not be in the BOUNDARY
                 %      point set) of the grid
                 %   2. the rightmost y of the grid, i.e. coord_y
-                %   3. the y of the minx coord, i.e. current method
+                %   3. the y of the minx coord
                 %   4. the average y of all the ys (of the points)
                 %      in the grid
                 %   5. ...
-                minp = b;
+                minp = [minx, y];
             end
             if maxx < x
                 maxx = x;
-                maxp = b;
+                maxp = [maxx, y];
             end
         end
     end

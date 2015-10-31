@@ -15,12 +15,15 @@ function main(r)
     p = find_boundary(r);
 
     plan();
+    global ENDPOINTS
+    env_plot(ENDPOINTS, 0, 'blue');
 
     traverse(r, p);
+    display('Traverse done, plotting, please wait...')
 
     global BOUNDARY
     figure
     env_plot(BOUNDARY, 0, 'green');
     env_plot(VISITED, 0, 'green');
-    env_plot(OBS_BOUNDARY, 0, 'green');
+    % env_plot(OBS_BOUNDARY, 0, 'green');
 end
