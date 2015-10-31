@@ -7,7 +7,6 @@ function traverse(r, old_pose)
     global START
     global END
     global VISITED
-    global USE_PLAN
     global ENDPOINTS
 
     START_size = size(START);
@@ -23,15 +22,7 @@ function traverse(r, old_pose)
 
     VISITED = [];
 
-    if USE_PLAN == 1
-        targets = ENDPOINTS;
-    else
-        targets = [];
-        for i = 1:size(START, 1)
-            targets(end+1, :) = [START(i, 2) START(i, 1)];
-            targets(end+1, :) = [END(i, 2) END(i, 1)];
-        end
-    end
+    targets = ENDPOINTS;
 
     trplot2(se(targets(1,1), targets(1,2),0), 'color', 'blue');
     trplot2(se(targets(2,1), targets(2,2), 0), 'color', 'yellow');

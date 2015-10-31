@@ -103,7 +103,7 @@ function pose = next_move(r, old_pose)
     global boundary_done
     global BOUNDARY
     global is_traversing_subpath
-    global VISITED
+    global OBS_BOUNDARY
 
     wall = wall_test(r);
     bump = bump_test(r);
@@ -123,7 +123,7 @@ function pose = next_move(r, old_pose)
             end
 
             if is_traversing_subpath == true
-                VISITED(end+1, :) = pos_from_ht(pose);
+                OBS_BOUNDARY(end+1, :) = pos_from_ht(pose);
             end
         else
             pose = old_pose * turn_right_until_a_wall(r, old_pose);
@@ -165,7 +165,7 @@ function pose = turn_right_until_a_wall(r, old_pose)
     global boundary_done
     global BOUNDARY
     global is_traversing_subpath
-    global VISITED
+    global OBS_BOUNDARY
 
     angle_accum = AngleSensorRoomba(r);
 
@@ -224,9 +224,9 @@ function pose = turn_right_until_a_wall(r, old_pose)
                     BOUNDARY(end+1, :) = boundary_new_row;
                 end  
                 if is_traversing_subpath == true
-                    visited_new_row = old_pose * se(dist_accum, 0, angle_accum);
-                    visited_new_row = pos_from_ht(visited_new_row);
-                    VISITED(end+1, :) = visited_new_row;
+                    OBS_BOUNDARY_new_row = old_pose * se(dist_accum, 0, angle_accum);
+                    OBS_BOUNDARY_new_row = pos_from_ht(OBS_BOUNDARY_new_row);
+                    OBS_BOUNDARY(end+1, :) = OBS_BOUNDARY_new_row;
                 end
 
                 ok = am_i_done(...
@@ -282,7 +282,7 @@ function new_pose = bypass(r, old_pose)
     global boundary_done
     global BOUNDARY
     global is_traversing_subpath
-    global VISITED
+    global OBS_BOUNDARY
 
     angle_accum = AngleSensorRoomba(r);
 
@@ -312,9 +312,9 @@ function new_pose = bypass(r, old_pose)
             BOUNDARY(end+1, :) = boundary_new_row;
         end  
         if is_traversing_subpath == true
-            visited_new_row = old_pose * se(dist_accum, 0, angle_accum);
-            visited_new_row = pos_from_ht(visited_new_row);
-            VISITED(end+1, :) = visited_new_row;
+            OBS_BOUNDARY_new_row = old_pose * se(dist_accum, 0, angle_accum);
+            OBS_BOUNDARY_new_row = pos_from_ht(OBS_BOUNDARY_new_row);
+            OBS_BOUNDARY(end+1, :) = OBS_BOUNDARY_new_row;
         end
 
         ok = am_i_done(...

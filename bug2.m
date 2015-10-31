@@ -6,7 +6,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
     global circumnavigate_ok
 
     global gw_g_bug2_tolerance
-    gw_g_bug2_tolerance = 0.10;
+    gw_g_bug2_tolerance = 0.15;
 
     goal = [goalx goaly];
 
@@ -21,7 +21,7 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
 
     global VISITED
 
-    CALIBRATE_TOLERANCE = 0.04;
+    CALIBRATE_TOLERANCE = 0.06;
 
     while true
         pose = turn_towards_dest(r, goal, pose);
