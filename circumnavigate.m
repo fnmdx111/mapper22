@@ -10,7 +10,8 @@ function pose = circumnavigate(r, goal, old_pose)
     global mw_g_circumnavigate_goal_coord
     mw_g_circumnavigate_goal_coord = goal;
 
-    global gw_g_bug2_tolerance
+    % gw_g stands for global-wise global variable
+    global gw_g_bug2_tolerance % master tolerance in bug2-related functions
     global mw_g_circumnavigate_tolerance
     mw_g_circumnavigate_tolerance = gw_g_bug2_tolerance + 0.05;
 

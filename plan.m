@@ -43,7 +43,7 @@ function plan
         %         |           |
         %         |           +-- Say y = 3.141,
         %         |               we find in this grid line:
-        %                           minx point = a, maxx point = b,
+        %         |                 minx point = a, maxx point = b,
         %         |               so we add [ax ay] [bx by] to endpoints
         %         +-- Say y = 1.571
         %             we find in this grid line:

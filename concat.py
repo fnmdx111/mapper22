@@ -7,6 +7,10 @@ import os
 homework_number = sys.argv[1]
 base_file = sys.argv[2]
 
+excluded = set()
+if len(sys.argv) > 2:
+    excluded.update(sys.argv[3:])
+
 homework_title = 'hw%s' % homework_number
 
 base_fname = base_file.split('.')[0]
@@ -71,7 +75,7 @@ with open('%s.m' % hw_name, 'w') as hwf:
 
     for r, _, fs in os.walk('.'):
         for f in fs:
-            if not visited[f]:
+            if not visited[f] and f not in excluded:
                 visited[f] = True
 
                 if f.endswith('.m'):

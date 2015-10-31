@@ -1,7 +1,13 @@
 function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
+% We use bug2 to traverse all the endpoints calculated in a
+% specific order, hoping the trajectory of the robot will cover
+% the environment as much as possible.
 
-    % work_mode: 0 - find boundary
-    %            1 - traverse
+    % work_mode: 0 - find boundary: robot sets its destination
+    %                to (infinity, 0) and try to map out the
+    %                outmost boundary of the current environment
+    %
+    %            1 - traverse: the classic Bug2 algorithm
 
     global circumnavigate_ok
 
@@ -9,6 +15,10 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
     gw_g_bug2_tolerance = 0.15;
 
     goal = [goalx goaly];
+    % We have a BUG here, if we use a 2D vector as one of the
+    % arguments of `bug2`, it will discard the y value of this
+    % vector, i.e. the vector [x, y] after being passed in becomes
+    % [x, x].
 
     pose = start_pose;
 
@@ -33,27 +43,27 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
 
         % We do this every 3 steps:
         %
-        %              * (R_x, R_y)
+        %                           point where the robot currently
+        %              * (R_x, R_y) is at
         %             /|---
         %            / | ^
         %           /  | |
-        %          /   | y?
+        %          /   | d?
         %   rv -> ^    | |
         %        /)?   | v
-        %       *------+---------* (P_x, P_y)
+        %       *------+---------* (P_x, P_y) destination
         %       (S_x, S_y)
+        %       point where we start bug2
         %
         %  rv = [pose(1, 1) pose(2, 1)]'
         %  sin? = sqrt(1 - (rv . (SP / ||SP||))^2)
-        %  y? = ||RS||sin?
-        %  If y? > epsilon, calibrate the orientation!
+        %  d? = ||RS||sin?
+        %  If d? > epsilon, calibrate the orientation!
 
         step_count = 0;
 
         bump = bump_test(r);
         while bump == NO_BUMP
-            %display(norm(pos_from_ht(pose) - goal_coord))
-
             dist = move_forward(r, WALK_VEL, WALK_TIME);
             pose = pose * se(dist, 0, 0);
             display(norm(pose(1:2, 3) - goal'))
@@ -88,10 +98,6 @@ function end_pose = bug2(r, start_pose, goalx, goaly, work_mode)
             bump = bump_test(r);
         end
     
-        %circumnavigate
-        %if arrive end point--exit
-        %if arrive last bump point--exit,failure
-        %if meet the intersected line, break and turn towards end point
         if work_mode == 0
             BOUNDARY = [];
         end
